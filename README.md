@@ -2,9 +2,10 @@
 [кода ](PropertyInfoBenchmark/Program.cs#L11)
 в конфигурации Release:
 ```
-GetPropertyTuple0 21ms
-GetPropertyTuple2 2553ms
-GetPropertyTuple2_cached 199ms
-GetPropertyTuple3 3150ms
-GetPropertyTuple4 87ms
+GetPropertyTuple0 20ms
+GetPropertyTuple2 1949ms
+GetPropertyTuple2_cached 180ms
+GetPropertyTuple3 2225ms
+GetPropertyTuple4 79ms
+GetPropertyTuple5 29ms
 ```

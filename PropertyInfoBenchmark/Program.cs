@@ -12,10 +12,11 @@ namespace PropertyInfoBenchmark
         {
             Test(() => GetPropertyTuple0(new Person {FirstName = "FN1"}, _ => _.FirstName), nameof(GetPropertyTuple0));
             //Test(() => GetPropertyTuple1(new Person {FirstName = "FN1"}, _ => _.FirstName), nameof(GetPropertyTuple1));
-            Test(() => GetPropertyTuple2(new Person {FirstName = "FN1"}, _ => _.FirstName), nameof(GetPropertyTuple2));            
-            Test(() => GetPropertyTuple2(new Person {FirstName = "FN1"}, _expression), nameof(GetPropertyTuple2)+"_cached");
+            Test(() => GetPropertyTuple2(new Person {FirstName = "FN1"}, _ => _.FirstName), nameof(GetPropertyTuple2));
+            Test(() => GetPropertyTuple2(new Person {FirstName = "FN1"}, _expression), nameof(GetPropertyTuple2) + "_cached");
             Test(() => GetPropertyTuple3(new Person {FirstName = "FN1"}, _ => _.FirstName), nameof(GetPropertyTuple3));
             Test(() => GetPropertyTuple4(new Person {FirstName = "FN1"}, _ => _.FirstName), nameof(GetPropertyTuple4));
+            Test(() => GetPropertyTuple5(new Person {FirstName = "FN1"}, _ => _.FirstName()), nameof(GetPropertyTuple5));
         }
 
         private static readonly Expression<Func<Person, string>> _expression = _ => _.FirstName;
@@ -43,7 +44,7 @@ namespace PropertyInfoBenchmark
         {
             var propertyName = ((MemberExpression) expression.Body).Member.Name;
             var propertyValue = expression.Compile()(entity);
-            return Tuple.Create(propertyName, propertyValue);
+            return Tuple.Create(propertyName, propertyValue);//qwe
         }
 
         private static Tuple<string, TProperty> GetPropertyTuple2<T, TProperty>(
@@ -68,10 +69,27 @@ namespace PropertyInfoBenchmark
         {
             return Tuple.Create(QuickName.GetProperyInfo(func).Name, func(entity));
         }
+
+        private static Tuple<string, TProperty> GetPropertyTuple5<T, TProperty>(
+            T entity, Func<T, IPropertyMetadata<T, TProperty>> metadataFunc)
+        {
+            var metadata = metadataFunc(default(T));
+            return Tuple.Create(metadata.PropertyName, metadata.Func(entity));
+        }
     }
 
     public class Person
     {
         public string FirstName { get; set; }
+        public string SecondName { get; set; }
+    }
+
+    public static class PersonExtensions
+    {
+        private static readonly IPropertyMetadata<Person, string> firstName = default(Person).Metadata(_ => _.FirstName);
+        public static IPropertyMetadata<Person, string> FirstName(this Person @this) => firstName;
+
+        private static readonly IPropertyMetadata<Person, string> secondName = default(Person).Metadata(_ => _.FirstName);
+        public static IPropertyMetadata<Person, string> SecondName(this Person @this) => secondName;
     }
 }
