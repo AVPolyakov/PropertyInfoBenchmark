@@ -44,7 +44,7 @@ namespace PropertyInfoBenchmark
         {
             var propertyName = ((MemberExpression) expression.Body).Member.Name;
             var propertyValue = expression.Compile()(entity);
-            return Tuple.Create(propertyName, propertyValue);//qwe
+            return Tuple.Create(propertyName, propertyValue);
         }
 
         private static Tuple<string, TProperty> GetPropertyTuple2<T, TProperty>(
