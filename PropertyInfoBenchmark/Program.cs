@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Linq.Expressions;
 using System.Reflection;
+using FluentValidation.Internal;
 
 namespace PropertyInfoBenchmark
 {
@@ -13,7 +14,9 @@ namespace PropertyInfoBenchmark
 			//Test(() => GetPropertyTuple1(new Person {FirstName = "FN1"}, _ => _.FirstName), nameof(GetPropertyTuple1));
 			Test(() => GetPropertyTuple2(new Person {FirstName = "FN1"}, _ => _.FirstName), nameof(GetPropertyTuple2));
 		    Test(() => GetPropertyTuple3(new Person {FirstName = "FN1"}, _ => _.FirstName), nameof(GetPropertyTuple3));
-			Test(() => GetPropertyTuple4(new Person {FirstName = "FN1"}, _ => _.FirstName), nameof(GetPropertyTuple4));
+		    Test(() => GetPropertyTuple4(new Person {FirstName = "FN1"}, _ => _.FirstName), nameof(GetPropertyTuple4));
+		    Test(() => GetPropertyTuple5(new Person {FirstName = "FN1"}, _ => _.FirstName), nameof(GetPropertyTuple5));
+			Test(() => GetPropertyTuple6(new Person {FirstName = "FN1"}, _ => _.FirstName), nameof(GetPropertyTuple6));
 		}
 
 		private static void Test(Action action, string testName)
@@ -60,7 +63,23 @@ namespace PropertyInfoBenchmark
 	        return Tuple.Create(propertyName, propertyValue);
 	    }
 
-		private static Tuple<string, TProperty> GetPropertyTuple4<T, TProperty>(
+	    private static Tuple<string, TProperty> GetPropertyTuple4<T, TProperty>(
+	        T entity, Expression<Func<T, TProperty>> expression)
+	    {
+	        var member = expression.GetMember();
+	        var propertyValue = AccessorCache<T>.GetCachedAccessor(member, expression)(entity);
+	        return Tuple.Create(member.Name, propertyValue);
+	    }
+
+	    private static Tuple<string, TProperty> GetPropertyTuple5<T, TProperty>(
+	        T entity, Expression<Func<T, TProperty>> expression)
+	    {
+	        var member = expression.GetMember();
+	        var propertyValue = default(TProperty);
+	        return Tuple.Create(member.Name, propertyValue);
+	    }
+
+		private static Tuple<string, TProperty> GetPropertyTuple6<T, TProperty>(
 			T entity, Func<T, TProperty> func)
 		{
 			return Tuple.Create(QuickName.GetProperyInfo(func).Name, func(entity));
