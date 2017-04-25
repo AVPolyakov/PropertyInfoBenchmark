@@ -3,9 +3,8 @@
 в конфигурации Release:
 ```
 GetPropertyTuple0 21ms
-GetPropertyTuple2 2604ms
-GetPropertyTuple3 2134ms
-GetPropertyTuple4 3314ms
-GetPropertyTuple5 2151ms
-GetPropertyTuple6 87ms
+GetPropertyTuple2 2553ms
+GetPropertyTuple2_cached 199ms
+GetPropertyTuple3 3150ms
+GetPropertyTuple4 87ms
 ```
